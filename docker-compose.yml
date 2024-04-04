@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+
+  tractor-app:
+    build: interface/
+    container_name: tractor-app
+    ports:
+      - "8502:8501"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+  redis:
+    image: redis
+    container_name: redis-server
+    depends_on:
+       - api
+    ports:
+      - "6379:6379"
+
+
+  api:
+    build: forecasting/
+    container_name: tractor-api
+    ports:
+      - "5555:5555"
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "Tractors"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "Metra2004"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - data:/var/lib/postgresql/data
+      - ./dumps/dump2.sql:/docker-entrypoint-initdb.d/dump2.sql
+    ports:
+      - 5433:5432
+
+volumes:
+  data:

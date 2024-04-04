@@ -1,0 +1,10 @@
+credentials:
+  usernames:
+    worker:
+      logged_in: False
+      name: Worker
+      password: Worker1234
+cookie:
+  expiry_days: 10
+  key: some_signature_key
+  name: some_cookie_name
